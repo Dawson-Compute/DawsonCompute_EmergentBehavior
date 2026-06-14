@@ -1,0 +1,12 @@
+body{
+    background-color: black;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 0;
+    margin: 0;
+}
+
+.slider{
+    width: 200px;
+    padding: 0;
+    margin: 0;
+}
