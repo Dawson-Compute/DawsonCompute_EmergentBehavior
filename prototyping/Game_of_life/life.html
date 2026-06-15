@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<title>Conway`s game of life</title>
+<canvas id="conway" width="1280" height="720"></canvas> 
+<style>
+* {
+    margin: 0px;
+    padding: 0px;
+
+}
+</style>
+<script>
+conway = document.getElementById('conway').getContext("2d")
+
+// this two make it full screen
+document.getElementById('conway').width = window.innerWidth
+document.getElementById('conway').height = window.innerHeight
+width = document.getElementById('conway').width
+height = document.getElementById('conway').height
+size = 5 
+
+draw = (x,y,c,s) => {
+    conway.fillStyle = c
+    conway.fillRect(x,y,s,s)
+}
+
+grid = []
+tempgrid =[]
+
+cellValue = (x,y) => {
+    try {
+        return grid[x][y]
+    }catch {
+        return 0
+    }
+}
+
+countAdjacent = (x,y) => {
+    count = 0
+    // center
+    if(cellValue(x-1,y))count++
+    if(cellValue(x+1,y))count++
+    //down
+    if(cellValue(x-1,y-1))count++
+    if(cellValue(x,y-1))count++
+    if(cellValue(x+1,y-1))count++
+    // up
+    if(cellValue(x-1,y+1))count++
+    if(cellValue(x,y+1))count++
+    if(cellValue(x+1,y+1))count++
+    return count
+}
+
+updateCell= (x,y) => {
+    adjacent = countAdjacent(x,y)
+    if(adjacent>4 || adjacent < 3) return 0 
+    if(grid[x][y] ==  0 && adjacent == 3)return 1
+    return grid[x][y]
+
+}
+
+update = () => {
+    conway.clearRect(0,0,width,height)
+    draw(0,0,'black',width)
+    for (let x = 0; x < width/size; x++){
+        for(let y = 0; y < height/size; y++){
+            tempgrid[x][y] = updateCell(x,y)
+        }
+    }
+
+    grid = tempgrid
+    var cnt = 0 
+
+    for (let x = 0; x < width/size; x++){
+        for(let y = 0; y < height/size; y++){
+            if(grid[x][y]) {
+                draw(x*size,y*size,`rgb(${x},${y},100)`,size)
+                cnt +=1
+            }
+        }
+    }
+    if (((width/size)*(height/size))/cnt >99 ) init()
+
+    //per frame (fast)
+    //setTimeout(() => {requestAnimationFrame(update)},40);
+
+    //set speed (slow)
+    setTimeout(() => { requestAnimationFrame(update) }, 100);
+}
+
+initArray = (w,h) =>{
+    arr = []
+    for(let x = 0; x <w;x ++){
+        arr[x] = []
+        for(let y = 0; y < h; y++){
+            arr[x][y] = 0;   
+        }
+    }
+    return arr
+
+}
+
+
+init = () => {
+    grid = initArray(width/size,height/size)
+    tempgrid = initArray(width/size,height/size)
+    for (let x = 0; x < width/size; x++){
+        for(let y = 0; y < height/size; y++){
+            if(Math.random() > 0.3) grid[x][y] = 1
+
+        }
+    }
+}
+init()
+update()
+</script>
+</html>   
